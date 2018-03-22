@@ -1,0 +1,74 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 23, 2018
+ *      Author: hsb2790
+ */
+#include "system.h"                     // for Qsys #defines
+#include <stdbool.h>
+
+        unsigned long  *ButtonBase_ptr = (unsigned long *)BUTTON_BASE;
+		unsigned long *inferred_Base_ptr = (unsigned long *)INFERRED_RAM_BASE;
+		unsigned long *LEDS_ptr = (unsigned long *) LEDS_BASE ;
+		unsigned long read_value=0;
+
+        bool truth;
+
+        bool ramConfidenceTest(unsigned long  *ramLocation_ptr,unsigned long numBytesToCheck){
+
+        	int a=0;
+        	int b;
+             unsigned long Increment_addr=1;
+        			for(a=0;a<numBytesToCheck;a++){    // increments the loop up until the number of bytes requested.
+        				*inferred_Base_ptr=*inferred_Base_ptr+a;   //Adds a value to the data within the address.
+        				read_value=*inferred_Base_ptr; // assigns variable the same data that's in the address
+        				inferred_Base_ptr++;
+        			}
+
+        			for (b=4;b<0;b--){
+        				if (read_value!=*inferred_Base_ptr){
+        				truth=false;
+        				}
+        				else(truth=true);
+        				inferred_Base_ptr--;
+        			}
+        return truth;
+        		 };
+
+
+void main(){
+unsigned long button_val;
+//while(1){
+//
+//
+//		if(*ButtonBase_ptr==1){
+//			*inferred_Base_ptr+=1;
+//			inferred_Base_ptr++;
+//			read_value=*inferred_Base_ptr;
+//		}
+//		for(int a=0;a<5;a++){
+//
+//			if(read_value!=*inferred_Base_ptr){
+//				*LEDS_ptr=0;  //All eight leds light up.
+//			}
+//				else {
+//					*LEDS_ptr=255;
+//				}
+//			}
+//		}
+	while(1){
+		button_val=*ButtonBase_ptr;
+//	 numBytesToCheck=4096;
+	if(button_val){
+		*LEDS_ptr=0;
+		 if (ramConfidenceTest(inferred_Base_ptr,4)){
+			*LEDS_ptr=255;
+		}
+	}
+
+	}
+		return;
+}
+
+
+
